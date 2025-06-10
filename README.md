@@ -68,7 +68,7 @@ Each interaction model has its own tableau builder function
 - haah_matrices: Haah’s code on a 3D cubic lattice with periodic boundary conditions, but here with two qubits 
       at every vertex.
 - X_cube_matrices: X‐cube model on a 3D lattice with cylindrical boundary conditions.
-- checks_subsystem_toric_matrices & stabilizer_subsystem_toric_matrices: Triangle and cube subsystem toric codes
+- checks_subsystem_toric_matrices & stabilizer_subsystem_toric_matrices: Commuting checks and stabilizer subsystem toric codes
         on 3D cubic lattices with periodic boundary conditions.
 - rotated_surface_matrices: Rotated surface code on a 2D square lattice with open boundary conditions.
 
