@@ -1,9 +1,9 @@
-Description:
 This script implements a tableau-based framework for representing commuting Pauli Hamiltonians. It provides operations
 to manipulate those tableaus and includes algorithms to find a diagonalizing circuit for any such Hamiltonian.
 The notation and some of the methods/algorithms are based on the paper "Improved simulation of stabilizer circuits"
-from Scott Aaronson and Daniel Gottesman (2004), which are further studied in "Circuit optimization of Hamiltonian
-simulation by simultaneous diagonalization of Pauli clusters" from Ewout van den Berg and Kristan Temme (2020).
+from Scott Aaronson and Daniel Gottesman, Phys. Rev. A 70, 052328 (2004), which are further studied in 
+"Circuit optimization of Hamiltonian simulation by simultaneous diagonalization of Pauli clusters" from Ewout Van Den Berg 
+and Kristan Temme, Quantum 4, 322 (2020).
 
 The main idea of the papers named above is to store each Pauli term of a given Hamiltonian as a row in two binary
 matrices X and Z (plus a single binary in the sign vector s). Depending on the Hamiltonian, which acts on n qubits
@@ -14,12 +14,12 @@ and sweeps of rows). Once the intial tableau is diagonalized (i.e. the X block i
 the physical Clifford gates from the set of operations and applies them to a fresh tableau to find the actual form of 
 the final diagonalized Hamiltonian.
 
-In this script, we provide functions to automatically build the tableaus for various quantum error-correcting models
-(2D Toric code, Color code on honeycomb lattice, Haah’s code, 3D Toric code, X-cube model, Rotated surface code and
-Triangle and Cube subsystem toric codes) of variable lattice size and to run the diagonalization algorithms on them.
-It also provides a “checker” mode that tests whether the final Z-only tableaus match the expected canonical forms 
+In this script, we provide functions to automatically build the tableaus for various Hamiltonians composed of commuting
+Pauli strings (2D Toric code, Color code on honeycomb lattice, Haah’s code, 3D Toric code, X-cube model, Rotated surface code 
+and some of the terms in the subsystem toric codes, i.e. a subset of commuting checks and the stabilizer operators). 
+The tableaus can be constructed for variable lattice size and then the diagonalization algorithms can be run for them.
+The script also provides a “checker” mode that tests whether the final Z-only tableaus match the expected canonical forms 
 which are claimed in our paper for the different models.
-
 
 The following code is structured in several sections:
 
@@ -35,7 +35,7 @@ and implements:
       (Both physical and virtual gates update the tableau and are logged in gate logs)
       
 - Two core diagonalization algorithms (clearing the X block of the tableau) to diagonalize any commuting 
-      Pauli Hamiltonian from the paper [van den Berg and Temme, 2020]
+      Pauli Hamiltonian from the paper by Van Den Berg and Temme. 
       
 - A method to extract and apply from a gate log only the physical Clifford gates on a fresh tableau.
     
