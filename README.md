@@ -23,82 +23,99 @@ which are claimed in our paper for the different models.
 
 The following code is structured in several sections:
 
+----------------
 1. Definition Tabelau Class
---------------------------
+
 Provides a data structure for storing a list of Pauli terms (in X/Z binary form plus a sign vector)
 and implements:
-    • Virtual tableau operations (row/column swaps, row sweeps) used by the diagonalization routines
-    • Physical Clifford gate operations (Hadamard, Phase, CNOT, CZ) also used by the diagonalization routines
+
+- Virtual tableau operations (row/column swaps, row sweeps) used by the diagonalization routines
+    
+- Physical Clifford gate operations (Hadamard, Phase, CNOT, CZ) also used by the diagonalization routines
       (Both physical and virtual gates update the tableau and are logged in gate logs)
-    • Two core diagonalization algorithms (clearing the X block of the tableau) to diagonalize any commuting 
+      
+- Two core diagonalization algorithms (clearing the X block of the tableau) to diagonalize any commuting 
       Pauli Hamiltonian from the paper [van den Berg and Temme, 2020]
-    • A method to extract and apply from a gate log only the physical Clifford gates on a fresh tableau.
-    • A “simplify_Z” procedure similar to gaussian elimination that further simplifies the tableau (where the X block 
+      
+- A method to extract and apply from a gate log only the physical Clifford gates on a fresh tableau.
+    
+- A “simplify_Z” procedure similar to gaussian elimination that further simplifies the tableau (where the X block 
       is already cleared) into a canonical form.
-    • Utilities for printing and for checking whether a fully simplified Z tableau matches the expected form 
+      
+- Utilities for printing and for checking whether a fully simplified Z tableau matches the expected form 
       (proposed in the accompanying paper) for a variety of error‐correcting code models (Toric code, Haah’s code, etc.).
 
+----------------
 2. Helper Functions
--------------------
+
 Contains miscellaneous routines that support building and validating tableaus, including:
-    • A logging function to write progress and error messages both to the console and to an output file.
-    • Indexing functions that map 2D/3D lattice coordinates under various boundary conditions into
+- A logging function to write progress and error messages both to the console and to an output file.
+
+- Indexing functions that map 2D/3D lattice coordinates under various boundary conditions into
       single‐integer spin indeces, e.g. “onedposhaah”, “onedpostoric”, “onedposXcube”, “onedpossurface”.
       (These coordinate mappers are used by the model‐specific builder functions from section 3 
       to place each Pauli operator at the correct qubit index when constructing the X and Z binary matrices 
       for a given model).
 
+----------------
 3. Model-Specific Tableau Builders
-----------------------------------
+
 Defines builder functions that return all building block of a tableau, i.e. (X, Z, s) for a given lattice size L
 Each interaction model has its own tableau builder function
-    • toric_code_matrices: 2D Toric code on a 2D L×L square lattice with periodic boundary conditions.
-    • color_honeycomb_matrices: Color code on a 2D honeycomb lattice with periodic boundary conditions.
-    • toric_3D_matrices: 3D Toric code on a 3D cubic square lattice with periodic boundary conditions.
-    • haah_matrices: Haah’s code on a 3D cubic lattice with periodic boundary conditions, but here with two qubits 
+- toric_code_matrices: 2D Toric code on a 2D L×L square lattice with periodic boundary conditions.
+- color_honeycomb_matrices: Color code on a 2D honeycomb lattice with periodic boundary conditions.
+- toric_3D_matrices: 3D Toric code on a 3D cubic square lattice with periodic boundary conditions.
+- haah_matrices: Haah’s code on a 3D cubic lattice with periodic boundary conditions, but here with two qubits 
       at every vertex.
-    • X_cube_matrices: X‐cube model on a 3D lattice with cylindrical boundary conditions.
-    • triangle_subsystem_toric_matrices & cube_subsystem_toric_matrices: Triangle and cube subsystem toric codes
+- X_cube_matrices: X‐cube model on a 3D lattice with cylindrical boundary conditions.
+- triangle_subsystem_toric_matrices & cube_subsystem_toric_matrices: Triangle and cube subsystem toric codes
         on 3D cubic lattices with periodic boundary conditions.
-    • rotated_surface_matrices: Rotated surface code on a 2D square lattice with open boundary conditions.
+- rotated_surface_matrices: Rotated surface code on a 2D square lattice with open boundary conditions.
 
 Each builder initializes binary matrices X and Z (and a sign vector s of zeros) and then populates them
 row by row according to the geometry and coloring of the operators acting on the lattice.
 
+----------------
 4. Main Routines
-----------------------------------
+
 Provides a command-line interface for two modes:
-    • single run: Instantiates the appropriate builder at its default “single_size” L, prints the initial tableau,
+- single run: Instantiates the appropriate builder at its default “single_size” L, prints the initial tableau,
         runs the two‐step diagonalization, applies only the physical Clifford gates from this process 
         to a new initial tableau, applies the Z‐simplification onto the "physical" tableau and prints 
         the final tableau and a boolean check for consistency with the predicted form.
-    • checker: Iterates over a range of lattice sizes (and depending on the command also for different models),
+- checker: Iterates over a range of lattice sizes (and depending on the command also for different models),
         runs full diagonalization and simplification for each size, and logs any failures (when the final Z
         tableau does not match the expected form) both to the console and to “output.txt”.
 The “model_config” dictionary centralizes:
-    - Which builder function to call for each interaction model (e.g. toric_code_matrices, haah_matrices, ...).
-    - Which lattice sizes to use for a single run and which ranges for the checker.
-    - Any size constraints
+- Which builder function to call for each interaction model (e.g. toric_code_matrices, haah_matrices, ...).
+- Which lattice sizes to use for a single run and which ranges for the checker.
+- Any size constraints
+
 The “main()” function parses sys.argv to dispatch either “single_run” or “checker” as requested.
 
-===============================================================================
+----------------
 Usage:
-    1. To perform a single diagonalization at the default size (single_size is set in model_config) for a given model:
-            python path/to/program_name.py single_run <model_name>
-            Example:
-            python program.py single_run toric_code
+1. To perform a single diagonalization at the default size (single_size is set in model_config) for a given model:
 
-    2. To run the checker over one specific model, verifying that over a range of lattice sizes (the range is set
-       via checker_sizes in model_config), the digonalization algorithm leads to the predictet final tableau:
-            python path/to/program_name.py checker <model_name>
-            Example:
-            python program.py checker haahs_code
+    ```python path/to/program_name.py single_run <model_name>```
 
-    3. To run the checker on every model in `model_config` over a range of lattice sizes:
-            python path/to/program.py checker
+    Example:
 
-    4. Output:
-        • 'single_run' prints initial/final tableaus and whether the final form is correct.
-        • 'checker' logs progress and any “ERROR” lines into `output.txt` (and also prints the progess to the console).
+    ```python program.py single_run toric_code```
 
-"""
+3. To run the checker over one specific model, verifying that over a range of lattice sizes (the range is set
+       via checker_sizes in model_config), the digonalization algorithm leads to the predicted final tableau:
+
+    ```python path/to/program_name.py checker <model_name>```
+
+   Example:
+
+   ```python program.py checker haahs_code```
+
+5. To run the checker on every model in `model_config` over a range of lattice sizes:
+
+   ```python path/to/program.py checker```
+
+7. Output:
+- 'single_run' prints initial/final tableaus and whether the final form is correct.
+- 'checker' logs progress and any “ERROR” lines into `output.txt` (and also prints the progess to the console).
