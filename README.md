@@ -16,14 +16,14 @@ gates from the set of operations and applies them to a fresh tableau to find the
 In this script, we provide functions to automatically build the tableaus for various Hamiltonians composed of commuting
 Pauli strings (2D Toric code, Color code on honeycomb lattice, Haah’s code, 3D Toric code, X-cube model, Rotated surface code 
 and some of the terms in the subsystem toric codes, i.e. a subset of commuting checks and the stabilizer operators). 
-The tableaus can be constructed for variable lattice size and then the diagonalization algorithms can be run for them.
-The script also provides a “checker” mode that tests whether the final Z-only tableaus match the expected canonical forms 
-which are claimed in our paper for the different models.
+The tableaus can be constructed any given lattice size, and later run the diagonalization algorithms on them. The script also 
+provides a “checker” mode that tests whether the final Z-only tableaus match the expected canonical forms which are claimed 
+in our paper for the different models.
 
-The following code is structured in several sections:
+The code is structured in several sections:
 
 ----------------
-1. Definition Tabelau Class
+1. Definition Tableau Class
 
 Provides a data structure for storing a list of Pauli terms (in X/Z binary form plus a sign vector)
 and implements:
@@ -41,13 +41,14 @@ and implements:
 - A “simplify_Z” procedure similar to gaussian elimination that further simplifies the tableau (where the X block 
       is already cleared) into a canonical form.
       
-- Utilities for printing and for checking whether a fully simplified Z tableau matches the expected form 
+- Utilities for printing and for checking whether a fully simplified Z tableau matrix matches the expected form 
       (proposed in the accompanying paper) for a variety of error‐correcting code models (Toric code, Haah’s code, etc.).
 
 ----------------
 2. Helper Functions
 
 Contains miscellaneous routines that support building and validating tableaus, including:
+
 - A logging function to write progress and error messages both to the console and to an output file.
 
 - Indexing functions that map 2D/3D lattice coordinates under various boundary conditions into
@@ -59,20 +60,17 @@ Contains miscellaneous routines that support building and validating tableaus, i
 ----------------
 3. Model-Specific Tableau Builders
 
-Defines builder functions that return all building block of a tableau, i.e. (X, Z, s) for a given lattice size L
-Each interaction model has its own tableau builder function
+Defines builder functions that return the building blocks of a tableau, i.e. (X, Z, s) for a given lattice size L. 
+Each interaction model has its own tableau builder function:
+
 - toric_code_matrices: 2D Toric code on a 2D L×L square lattice with periodic boundary conditions.
 - color_honeycomb_matrices: Color code on a 2D honeycomb lattice with periodic boundary conditions.
 - toric_3D_matrices: 3D Toric code on a 3D cubic square lattice with periodic boundary conditions.
-- haah_matrices: Haah’s code on a 3D cubic lattice with periodic boundary conditions, but here with two qubits 
-      at every vertex.
+- haah_matrices: Haah’s code on a 3D cubic lattice with periodic boundary conditions (two qubits considered at every vertex).
 - X_cube_matrices: X‐cube model on a 3D lattice with cylindrical boundary conditions.
 - checks_subsystem_toric_matrices & stabilizer_subsystem_toric_matrices: Commuting checks and stabilizer subsystem toric codes
         on 3D cubic lattices with periodic boundary conditions.
 - rotated_surface_matrices: Rotated surface code on a 2D square lattice with open boundary conditions.
-
-Each builder initializes binary matrices X and Z (and a sign vector s of zeros) and then populates them
-row by row according to the geometry and coloring of the operators acting on the lattice.
 
 ----------------
 4. Main Routines
@@ -85,6 +83,7 @@ Provides a command-line interface for two modes:
 - checker: Iterates over a range of lattice sizes (and depending on the command also for different models),
         runs full diagonalization and simplification for each size, and logs any failures (when the final Z
         tableau does not match the expected form) both to the console and to “output.txt”.
+
 The “model_config” dictionary centralizes:
 - Which builder function to call for each interaction model (e.g. toric_code_matrices, haah_matrices, ...).
 - Which lattice sizes to use for a single run and which ranges for the checker.
