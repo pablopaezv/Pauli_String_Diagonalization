@@ -1,18 +1,17 @@
-This script implements a tableau-based framework for representing commuting Pauli Hamiltonians. It provides operations
-to manipulate those tableaus and includes algorithms to find a diagonalizing circuit for any such Hamiltonian.
+This script implements a tableau-based framework for representing Hamiltonians consisting of commuting Pauli strings. 
+It provides operations to manipulate the tableaus and includes algorithms to find a diagonalizing circuit for any such Hamiltonian.
 The notation and some of the methods/algorithms are based on the paper "Improved simulation of stabilizer circuits"
-from Scott Aaronson and Daniel Gottesman, Phys. Rev. A 70, 052328 (2004), which are further studied in 
-"Circuit optimization of Hamiltonian simulation by simultaneous diagonalization of Pauli clusters" from Ewout Van Den Berg 
+by Scott Aaronson and Daniel Gottesman, Phys. Rev. A 70, 052328 (2004), which are further studied in 
+"Circuit optimization of Hamiltonian simulation by simultaneous diagonalization of Pauli clusters" by Ewout Van Den Berg 
 and Kristan Temme, Quantum 4, 322 (2020).
 
 The main idea of the papers named above is to store each Pauli term of a given Hamiltonian as a row in two binary
-matrices X and Z (plus a single binary in the sign vector s). Depending on the Hamiltonian, which acts on n qubits
-and has m terms, the matrices X and Z will have shape (m, n). To diagonalize the Hamiltonian, the algorithms determine
-a set of operations that can be applied to the tableau, such that it clears the X block, where each operation 
-corresponds to a physical Clifford gate (Hadamard, Phase, CNOT, CZ) or a virtual operation (swaps of rows and columns 
-and sweeps of rows). Once the intial tableau is diagonalized (i.e. the X block is cleared), the program extracts only 
-the physical Clifford gates from the set of operations and applies them to a fresh tableau to find the actual form of 
-the final diagonalized Hamiltonian.
+matrices X and Z (plus a single binary in the sign vector s). For every Hamiltonian acting on n qubits with m terms, 
+the matrices X and Z will have shape (m, n). To diagonalize the Hamiltonian, the algorithms determine a set of operations 
+that can be applied to the tableau, such that it clears the X block, where each operation corresponds to a physical 
+Clifford gate (Hadamard, Phase, CNOT, CZ) or a virtual operation (swaps of rows and columns and sweeps of rows). 
+Once the intial tableau is diagonalized (i.e. the X block is cleared), the program extracts only the physical Clifford 
+gates from the set of operations and applies them to a fresh tableau to find the actual form of the final diagonalized Hamiltonian.
 
 In this script, we provide functions to automatically build the tableaus for various Hamiltonians composed of commuting
 Pauli strings (2D Toric code, Color code on honeycomb lattice, Haah’s code, 3D Toric code, X-cube model, Rotated surface code 
