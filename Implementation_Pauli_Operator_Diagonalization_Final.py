@@ -7,7 +7,7 @@ print("Current working directory:", os.getcwd())
 
 """
 This code is published as part of the paper:
-"Efficient and simple Gibbs sampling of the 2D toric code via duality to classical Ising chains" (arXiv:...)
+"Efficient and simple Gibbs sampling of the 2D toric code via duality to classical Ising chains" (arXiv:2508.00126)
 Authors: Pablo Páez Velasco, Niclas Schilling, Samuel O. Scalet, Frank Verstraete and Ángela Capel
 
 This code in under MIT License
@@ -1882,4 +1882,5 @@ def main():
         print(usage)
 
 if __name__ == "__main__":
+
     main()
