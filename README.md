@@ -5,6 +5,8 @@ by Scott Aaronson and Daniel Gottesman, Phys. Rev. A 70, 052328 (2004), which ar
 "Circuit optimization of Hamiltonian simulation by simultaneous diagonalization of Pauli clusters" by Ewout Van Den Berg 
 and Kristan Temme, Quantum 4, 322 (2020).
 
+Zenodo DOI: 10.5281/zenodo.8475
+
 The main idea of the papers named above is to store each Pauli term of a given Hamiltonian as a row in two binary
 matrices X and Z (plus a single binary in the sign vector s). For every Hamiltonian acting on n qubits with m terms, 
 the matrices X and Z will have shape (m, n). To diagonalize the Hamiltonian, the algorithms determine a set of operations 
